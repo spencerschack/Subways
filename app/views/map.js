@@ -4,6 +4,16 @@ import StyleBindings from 'subways/views/application/style-bindings';
 
 var alias = Ember.computed.alias;
 
+function findTile(action) {
+  return function(event) {
+    var row = this.rowAt(event.pageY);
+    var column = this.columnAt(event.pageX);
+    if(column !== null && row !== null) {
+      this.get('controller').send(action, column, row);
+    }
+  }
+}
+
 export default Ember.View.extend(Document, StyleBindings, {
 
   tileWidth: 25,
@@ -43,19 +53,7 @@ export default Ember.View.extend(Document, StyleBindings, {
     return index;
   },
 
-  chosePathStart: function(event) {
-    var row = this.rowAt(event.pageY);
-    var column = this.columnAt(event.pageX);
-    if(column && row) {
-      this.get('controller').send('chosePathStart', column, row);
-    }
-  }.on('click'),
-  chosePathEnd: function(event) {
-    var row = this.rowAt(event.pageY);
-    var column = this.columnAt(event.pageX);
-    if(column && row) {
-      this.get('controller').send('chosePathEnd', column, row);
-    }
-  }.on('mouseMove')
+  chosePathStart: findTile('chosePathStart').on('click'),
+  chosePathEnd: findTile('chosePathEnd').on('mouseMove')
 
 });
