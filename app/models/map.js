@@ -30,7 +30,11 @@ export default DS.Model.extend({
   }.property(),
 
   tileAt: function(column, row) {
-    return this.get('tiles')[this.tileMapIndex(column, row)];
+    var columns = this.get('columns');
+    var rows = this.get('rows');
+    if(column > -1 && column < columns && row > -1 && row < rows) {
+      return this.get('tiles')[this.tileMapIndex(column, row)];
+    }
   }
   
 });

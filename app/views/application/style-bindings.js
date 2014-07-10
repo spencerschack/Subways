@@ -11,7 +11,7 @@ export default Ember.Mixin.create({
   defineStyle: function() {
     var bindings = this.get('styleBindings');
     var length = bindings.length;
-    if(length === 0) return;
+    if(length === 0) { return; }
     var mapping = new Array(length);
     var dependentKeys = new Array(length);
     var parts;

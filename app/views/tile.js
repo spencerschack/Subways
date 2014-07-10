@@ -16,6 +16,10 @@ export default Circle.extend({
 
   y: function() {
     return (this.get('content.row') + 0.5) * this.get('width');
-  }.property('content.row')
+  }.property('content.row'),
+
+  fill: function() {
+    return this.get('content.walkable') ? this.get('content.opened') ? '#0F0' : '#CCC' : '#FFF';
+  }.property('content.{walkable,opened}')
 
 });

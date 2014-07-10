@@ -8,10 +8,8 @@ function findTile(action) {
   return function(event) {
     var row = this.rowAt(event.pageY);
     var column = this.columnAt(event.pageX);
-    if(column !== null && row !== null) {
-      this.get('controller').send(action, column, row);
-    }
-  }
+    this.get('controller').send(action, column, row);
+  };
 }
 
 export default Ember.View.extend(Document, StyleBindings, {
@@ -43,14 +41,12 @@ export default Ember.View.extend(Document, StyleBindings, {
   rowAt: function(y) {
     var relativeOffset = y - this.$().offset().top;
     var index = Math.floor(relativeOffset / this.get('tileHeight'));
-    if(index < 0 || index > this.get('rows')) { return null; }
-    return index;
+    return Math.max(0, Math.min(index, this.get('rows')));
   },
   columnAt: function(x) {
     var relativeOffset = x - this.$().offset().left;
     var index = Math.floor(relativeOffset / this.get('tileWidth'));
-    if(index < 0 || index > this.get('columns')) { return null; }
-    return index;
+    return Math.max(0, Math.min(index, this.get('columns')));
   },
 
   chosePathStart: findTile('chosePathStart').on('click'),

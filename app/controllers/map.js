@@ -1,36 +1,29 @@
 import Ember from 'ember';
+import PathFinder from 'subways/utils/path-finder';
+
+var alias = Ember.computed.alias;
+
+function findTile(path) {
+  return function(column, row) {
+    this.set(path, this.get('model').tileAt(column, row));
+  };
+}
 
 export default Ember.ObjectController.extend({
 
-  path: function() {
-    return Ember.ArrayController.create({
-      content: []
+  path: alias('pathFinder.path'),
+
+  pathFinder: function() {
+    return PathFinder.create({
+      map: this.get('model'),
+      path: this.store.createRecord('path')
     });
   }.property(),
 
   actions: {
 
-    chosePathStart: function(column, row) {
-      var tile = this.get('model').tileAt(column, row);
-      if(tile) {
-        var path = this.get('path');
-        path.clear();
-        path.pushObject(tile);
-      }
-    },
-
-    chosePathEnd: function(column, row) {
-      var tile = this.get('model').tileAt(column, row);
-      if(tile) {
-        var path = this.get('path');
-        if(path.get('length') == 2) {
-          path.popObject();
-        }
-        if(path.get('length') == 1) {
-          path.pushObject(tile);
-        }
-      }
-    }
+    chosePathStart: findTile('pathFinder.start'),
+    chosePathEnd: findTile('pathFinder.end')
 
   }
 

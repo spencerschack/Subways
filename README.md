@@ -23,3 +23,8 @@ This README outlines the details of collaborating on this Ember application.
 * `ember build`
 
 For more information on using ember-cli, visit [http://iamstef.net/ember-cli/](http://iamstef.net/ember-cli/).
+
+## Resources
+* [Distance of grid with diagonals](http://en.wikipedia.org/wiki/Chebyshev_distance)
+* [A* implementation notes](http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html)
+* [A* Visualization](http://qiao.github.io/PathFinding.js/visual/)
