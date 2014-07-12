@@ -14,26 +14,19 @@ var ANGLE_MAP = {
   SW: 3 / 4 * PI,
   W:  0
 };
-var CURVE_OFFSET = 10;
+var CURVE_OFFSET = 7;
 
 export default Ember.View.extend(Element, {
 
-  tagName: 'path',
+  classNames: ['path'],
 
-  attributeBindings: ['data:d', 'stroke',
-    'strokeWidth:stroke-width', 'strokeLinecap:stroke-linecap',
-    'fill', 'strokeLinejoin:stroke-linejoin'],
+  templateName: 'path',
 
   tileWidth: alias('parentView.tileWidth'),
   tileHeight: alias('parentView.tileHeight'),
 
-  stroke: 'blue',
-  strokeWidth: '4px',
-  strokeLinecap: 'round',
-  strokeLinejoin: 'round',
-  fill: 'transparent',
-
   data: function() {
+    console.log('cost', this.get('content.cost'));
     var tiles = this.get('content.tiles').toArray();
     var length = tiles.get('length');
     if(length < 2) { return null; }

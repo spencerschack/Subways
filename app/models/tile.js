@@ -15,7 +15,7 @@ export default DS.Model.extend({
   column: attr('number'),
 
   walkable: function() {
-    return Math.random() > 0.05;
+    return Math.random() > 0.2;
   }.property(),
 
   neighbors: function() {

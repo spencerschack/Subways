@@ -68,7 +68,6 @@ export default Ember.Object.extend({
             dc = Math.abs(column - endColumn);
             neighbor.h = Math.max(dc, dr) + (dc + dr) / 10;
           }
-          neighbor.h || (neighbor.h = heuristic(neighbor, end));
           neighbor.f = neighbor.g + neighbor.h;
           neighbor.prev = current;
           if(closed) {
@@ -80,7 +79,7 @@ export default Ember.Object.extend({
         }
       }
     }
-  }.bm('finder').observes('start', 'end'),
+  }.observes('start', 'end'),
 
   /**
    * Takes the last node in a path, walks up through each prev node creating

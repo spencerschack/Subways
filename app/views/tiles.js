@@ -1,9 +1,11 @@
 import Ember from 'ember';
-import Group from 'subways/views/svg/group';
+import Document from 'subways/views/svg/document';
 
 var alias = Ember.computed.alias;
 
-export default Ember.View.extend(Group, {
+export default Ember.View.extend(Document, {
+
+  classNames: ['tiles'],
 
   tileWidth: alias('parentView.tileWidth'),
   tileHeight: alias('parentView.tileHeight'),

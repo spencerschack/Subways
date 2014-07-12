@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import Document from 'subways/views/svg/document';
 import StyleBindings from 'subways/views/application/style-bindings';
 
 var alias = Ember.computed.alias;
@@ -12,7 +11,7 @@ function findTile(action) {
   };
 }
 
-export default Ember.View.extend(Document, StyleBindings, {
+export default Ember.View.extend(StyleBindings, {
 
   tileWidth: 25,
   tileHeight: 25,

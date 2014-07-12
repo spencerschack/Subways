@@ -13,6 +13,10 @@ export default Ember.ObjectController.extend({
 
   path: alias('pathFinder.path'),
 
+  costLogger: function() {
+    console.log('cost', this.get('path.cost'));
+  }.observes('path.cost'),
+
   pathFinder: function() {
     return PathFinder.create({
       map: this.get('model'),

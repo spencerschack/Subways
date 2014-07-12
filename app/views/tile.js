@@ -19,7 +19,7 @@ export default Circle.extend({
   }.property('content.row'),
 
   fill: function() {
-    return this.get('content.walkable') ? this.get('content.opened') ? '#0F0' : '#CCC' : '#FFF';
+    return this.get('content.walkable') ? '#BBB' : '#ECECEC';
   }.property('content.{walkable,opened}')
 
 });
