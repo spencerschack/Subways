@@ -18,22 +18,6 @@ export default DS.Model.extend({
     return Math.random() > 0.2;
   }.property(),
 
-  neighbors: function() {
-    var row = this.get('row');
-    var column = this.get('column');
-    var map = this.get('map');
-    var i, j, tile, arr = [];
-    for(i = -1; i < 2; i++) {
-      for(j = -1; j < 2; j++) {
-        if(!(i === 0 && j === 0)) {
-          tile = map.tileAt(column + i, row + j);
-          if(tile && tile.get('walkable')) { arr.push(tile); }
-        }
-      }
-    }
-    return arr;
-  }.property('map.tiles.[]'),
-
   directionTo: function(tile) {
     var diffRow = tile.get('row') - this.get('row');
     var diffColumn = tile.get('column') - this.get('column');

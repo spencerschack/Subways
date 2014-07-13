@@ -1,7 +1,5 @@
 import Ember from 'ember';
 
-var SQRT2 = Math.sqrt(2);
-
 function PathFinderNode(tile, end) {
   this.tile = tile;
   this.end = end;
@@ -30,20 +28,21 @@ export default Ember.Object.extend({
   }.property('start', 'end'),
 
   finder: function() {
-    this.get('path.tiles').clear();
+    this.set('path.tiles', []);
     var start = this.get('start');
     var end = this.get('end');
     if(!start || !end || start === end) { return; }
-    if(!start.get('walkable') || !end.get('walkable')) { return; }
+    if(!start.walkable || !end.walkable) { return; }
     var cached = this.get('cached');
     if(cached) {
       this.setTiles(cached);
       return;
     }
-    var endRow = end.get('row');
-    var endColumn = end.get('column');
+    var map = this.get('map');
+    var endRow = end.row;
+    var endColumn = end.column;
     var reachable = this.get('reachable');
-    var current, neighbors, neighbor, i, g, closed, dr, dc, row, column;
+    var current, neighbors, neighbor, i, g;
     while(!reachable.empty()) {
       current = reachable.pop();
       if(current.tile === end) {
@@ -51,26 +50,19 @@ export default Ember.Object.extend({
         return;
       }
       current.explored = true;
-      neighbors = current.tile.get('neighbors');
+      neighbors = map.neighborsOf(current.tile);
       for(i = 0; i < neighbors.length; i++) {
         neighbor = this.nodeFor(neighbors[i]);
-        row = current.tile.get('row');
-        column = current.tile.get('column');
-        dr = row - neighbor.tile.get('row');
-        dc = column - neighbor.tile.get('column');
         if(neighbor.explored) { continue; }
-        g = current.g + ((dr === 0 || dc === 0) ? 1 : SQRT2);
-        closed = !neighbor.opened;
-        if(closed || g < neighbor.g) {
+        g = current.g + map.distance(current.tile, neighbor.tile);
+        if(!neighbor.opened || g < neighbor.g) {
           neighbor.g = g;
           if(!neighbor.h) {
-            dr = Math.abs(row - endRow);
-            dc = Math.abs(column - endColumn);
-            neighbor.h = Math.max(dc, dr) + (dc + dr) / 10;
+            neighbor.h = this.heuristic(neighbor.tile);
           }
           neighbor.f = neighbor.g + neighbor.h;
           neighbor.prev = current;
-          if(closed) {
+          if(!neighbor.opened) {
             reachable.push(neighbor);
             neighbor.opened = true;
           } else {
@@ -80,6 +72,13 @@ export default Ember.Object.extend({
       }
     }
   }.observes('start', 'end'),
+
+  heuristic: function(tile) {
+    var end = this.get('end');
+    var dr = Math.abs(tile.row - end.row);
+    var dc = Math.abs(tile.column - end.column);
+    return Math.max(dc, dr) + (dc + dr) / 10;
+  },
 
   /**
    * Takes the last node in a path, walks up through each prev node creating
@@ -94,9 +93,10 @@ export default Ember.Object.extend({
    */
   reconstructPath: function(node) {
     var arr = [], prevDir, dir, prev;
+    var map = this.get('map');
     for(; node; node = prev, prevDir = dir) {
       prev = node.prev;
-      dir = prev ? node.tile.directionTo(prev.tile) : null;
+      dir = prev ? map.direction(node.tile, prev.tile) : null;
       if(dir !== prevDir) {
         arr.unshift(node.tile);
       }
@@ -106,19 +106,22 @@ export default Ember.Object.extend({
 
   setTiles: function(arr) {
     this.set('cached', arr);
-    this.get('path.tiles').addObjects(arr);
+    this.set('path.tiles', arr);
   },
 
   cached: function(_, value) {
-    var key = this.get('start') + this.get('end');
+    var start = this.get('start');
+    var end = this.get('end');
+    var key = start.row + ',' + start.column + ':' + end.row + ',' + end.column;
+    var cache = this.get('cache');
     if(arguments.length === 2) {
-      return this.get('cache').set(key, value);
+      cache[key] = value;
     }
-    return this.get('cache').get(key);
-  }.property('start', 'end'),
+    return cache[key];
+  }.property('cache', 'start', 'end'),
 
   cache: function() {
-    return Ember.Map.create();
+    return {};
   }.property('map.{rows,columns}'),
 
   nodeFor: function(tile) {
@@ -132,6 +135,6 @@ export default Ember.Object.extend({
         return new PathFinderNode(tile, end);
       }
     });
-  }.property('end')
+  }.property('start', 'end')
 
 });

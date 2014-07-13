@@ -1,12 +1,27 @@
+import Ember from 'ember';
 import DS from 'ember-data';
 
 var hasMany = DS.hasMany;
 
 var TILE_COST = 1;
 
+function PathSegment() {
+
+  this.prevSegment = null;
+  this.nextSegment = null;
+
+  this.prevTile = null;
+  this.nextTile = null;
+
+  this.path = null;
+
+  this.direction = null;
+
+}
+
 export default DS.Model.extend({
 
-  tiles: hasMany('tile', { inverse: null }),
+  tiles: [],
 
   cost: function() {
     var tiles = this.get('tiles');

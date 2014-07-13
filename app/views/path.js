@@ -26,9 +26,8 @@ export default Ember.View.extend(Element, {
   tileHeight: alias('parentView.tileHeight'),
 
   data: function() {
-    console.log('cost', this.get('content.cost'));
     var tiles = this.get('content.tiles').toArray();
-    var length = tiles.get('length');
+    var length = tiles.length;
     if(length < 2) { return null; }
     var tile = tiles[0];
     var str = 'M' + this.x(tile) + ' ' + this.y(tile);
@@ -47,15 +46,15 @@ export default Ember.View.extend(Element, {
   }.property('content.tiles.[]', 'tileWidth', 'tileHeight'),
 
   x: function(tile) {
-    return (tile.get('column') + 0.5) * this.get('tileWidth');
+    return (tile.column + 0.5) * this.get('tileWidth');
   },
 
   y: function(tile) {
-    return (tile.get('row') + 0.5) * this.get('tileHeight');
+    return (tile.row + 0.5) * this.get('tileHeight');
   },
 
   shifted: function(to, from) {
-    var angle = ANGLE_MAP[to.directionTo(from)];
+    var angle = ANGLE_MAP[this.get('controller.model').direction(to, from)];
     var x = this.x(to) + CURVE_OFFSET * Math.cos(angle);
     var y = this.y(to) + CURVE_OFFSET * Math.sin(angle);
     return { x: x, y: y };
